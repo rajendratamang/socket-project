@@ -3,10 +3,10 @@ const axios = require("axios");
 
 const app = express();
 
-// Middleware
+// Middleware to parse JSON
 app.use(express.json());
 
-// Mock plant data
+// Mock plant data (local)
 const plants = [
   { id: 1, name: "Rose", type: "Flower" },
   { id: 2, name: "Tulsi", type: "Herb" },
@@ -18,7 +18,7 @@ app.get("/", (req, res) => {
   res.send("Server is running");
 });
 
-// Local plants
+// GET all plants (local mock data)
 app.get("/plants", (req, res) => {
   res.status(200).json({
     success: true,
@@ -26,17 +26,11 @@ app.get("/plants", (req, res) => {
   });
 });
 
-// ✅ FIXED: Public plant API (NO API KEY)
+// GET plants from FREE public API (NO API KEY)
 app.get("/plants/public", async (req, res) => {
   try {
     const response = await axios.get(
-      "https://openfarm.cc/api/v1/crops",
-      {
-        headers: {
-          "User-Agent": "Mozilla/5.0",
-          Accept: "application/json",
-        },
-      }
+      "https://openfarm.cc/api/v1/crops"
     );
 
     res.status(200).json({
@@ -45,8 +39,7 @@ app.get("/plants/public", async (req, res) => {
       data: response.data.data,
     });
   } catch (error) {
-    console.error("API ERROR:", error.response?.status, error.message);
-
+    console.error("External API error:", error.message);
     res.status(500).json({
       success: false,
       message: "Failed to fetch plant data",
