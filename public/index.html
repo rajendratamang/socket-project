@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Socket Test Client</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background: #0f172a;
+        color: #e5e7eb;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+      }
+
+      button {
+        padding: 10px 16px;
+        font-size: 16px;
+        cursor: pointer;
+        border: none;
+        border-radius: 6px;
+        background: #22c55e;
+        font-weight: bold;
+      }
+    </style>
+  </head>
+
+  <body>
+    <h1>⚡ Socket Test Client</h1>
+    <button id="connectBtn">Send Test Event</button>
+
+    <!-- socket.io client script -->
+    <script src="http://localhost:5000/socket.io/socket.io.js"></script>
+
+    <script>
+      const socket = io("http://localhost:5000");
+
+      socket.on("connect", () => {
+        console.log("✅ Connected to server:", socket.id);
+      });
+
+      socket.on("disconnect", () => {
+        console.log("❌ Disconnected from server");
+      });
+
+      document.getElementById("connectBtn").addEventListener("click", () => {
+        socket.emit("test_event", {
+          message: "Hello from browser",
+        });
+      });
+    </script>
+  </body>
+</html>
